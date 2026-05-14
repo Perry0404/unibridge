@@ -1,4 +1,11 @@
-'use client';
+import { writeFileSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dir = dirname(fileURLToPath(import.meta.url));
+const root = join(__dir, '..');
+
+writeFileSync(join(root, 'app/bridge/page.tsx'), `'use client';
 
 import { useEffect, useState, useMemo } from 'react';
 import WalletCard from '@/components/WalletCard';
@@ -112,9 +119,9 @@ export default function BridgePage() {
             <button
               key={v}
               onClick={() => { setView(v); if (v === 'history') handleLoadHistory(); }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={\`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all \${
                 view === v ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-zinc-300'
-              }`}
+              }\`}
             >
               {v === 'bridge' ? <GitMerge className="w-4 h-4" /> : <History className="w-4 h-4" />}
               {v === 'bridge' ? 'Bridge' : 'History'}
@@ -165,9 +172,9 @@ export default function BridgePage() {
                   {/* Identity row */}
                   {identity && (
                     <div className="flex items-center gap-2 text-xs text-zinc-500 bg-zinc-900 rounded-xl px-3 py-2">
-                      <span className={`w-2 h-2 rounded-full ${isLocked ? 'bg-amber-400' : 'bg-green-400 animate-pulse'}`} />
+                      <span className={\`w-2 h-2 rounded-full \${isLocked ? 'bg-amber-400' : 'bg-green-400 animate-pulse'}\`} />
                       <span className="text-zinc-300 font-mono">
-                        {identity.nametag ? `@${identity.nametag}` : `${identity.chainPubkey.slice(0, 20)}...`}
+                        {identity.nametag ? \`@\${identity.nametag}\` : \`\${identity.chainPubkey.slice(0, 20)}...\`}
                       </span>
                       <span className="ml-auto text-orange-500 font-medium">Unicity Testnet</span>
                     </div>
@@ -240,11 +247,11 @@ export default function BridgePage() {
                       <button
                         onClick={() => setShowNetPicker(v => !v)}
                         disabled={isLocked}
-                        className={`w-full flex items-center justify-between bg-zinc-900 border ${destNet.border} rounded-xl px-4 py-3 text-sm transition-colors hover:border-zinc-600 disabled:opacity-40`}
+                        className={\`w-full flex items-center justify-between bg-zinc-900 border \${destNet.border} rounded-xl px-4 py-3 text-sm transition-colors hover:border-zinc-600 disabled:opacity-40\`}
                       >
                         <span className="flex items-center gap-3">
-                          <span className={`font-mono font-bold text-sm ${destNet.color}`}>{destNet.logo}</span>
-                          <span className={`font-semibold ${destNet.color}`}>{destNet.label}</span>
+                          <span className={\`font-mono font-bold text-sm \${destNet.color}\`}>{destNet.logo}</span>
+                          <span className={\`font-semibold \${destNet.color}\`}>{destNet.label}</span>
                         </span>
                         <ChevronDown className="w-4 h-4 text-zinc-500" />
                       </button>
@@ -256,8 +263,8 @@ export default function BridgePage() {
                               onClick={() => { setDestNet(net); setShowNetPicker(false); }}
                               className="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 text-sm transition-colors"
                             >
-                              <span className={`font-mono font-bold text-sm ${net.color}`}>{net.logo}</span>
-                              <span className={`font-medium ${net.color}`}>{net.label}</span>
+                              <span className={\`font-mono font-bold text-sm \${net.color}\`}>{net.logo}</span>
+                              <span className={\`font-medium \${net.color}\`}>{net.label}</span>
                             </button>
                           ))}
                         </div>
@@ -265,7 +272,7 @@ export default function BridgePage() {
                     </div>
                     <input
                       type="text"
-                      placeholder={`Destination ${destNet.label} address (0x...)`}
+                      placeholder={\`Destination \${destNet.label} address (0x...)\`}
                       value={destAddr}
                       onChange={e => setDestAddr(e.target.value)}
                       disabled={isLocked}
@@ -411,7 +418,7 @@ export default function BridgePage() {
                       <StatusIcon status={item.status} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className={`text-xs font-bold uppercase ${item._src === 'l1' ? 'text-orange-400' : 'text-blue-400'}`}>
+                          <span className={\`text-xs font-bold uppercase \${item._src === 'l1' ? 'text-orange-400' : 'text-blue-400'}\`}>
                             {item._src === 'l1' ? 'L1 BRIDGE' : 'TRANSFER'}
                           </span>
                           {item.type && <span className="text-xs text-zinc-600">{item.type}</span>}
@@ -434,18 +441,18 @@ export default function BridgePage() {
                         </p>
                       </div>
                       <div className="flex flex-col items-end gap-1 shrink-0">
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${
+                        <span className={\`text-xs px-2 py-0.5 rounded-full \${
                           item.status === 'confirmed' || item.status === 'success'
                             ? 'bg-green-500/10 text-green-400'
                             : item.status === 'failed' || item.status === 'error'
                             ? 'bg-red-500/10 text-red-400'
                             : 'bg-amber-500/10 text-amber-400'
-                        }`}>
+                        }\`}>
                           {item.status ?? 'pending'}
                         </span>
                         {item.txId && (
                           <a
-                            href={`https://sphere.unicity.network/tx/${item.txId}`}
+                            href={\`https://sphere.unicity.network/tx/\${item.txId}\`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-xs text-zinc-600 hover:text-orange-400 flex items-center gap-1"
@@ -471,3 +478,6 @@ export default function BridgePage() {
     </div>
   );
 }
+`, 'utf8');
+
+console.log('wrote app/bridge/page.tsx');
