@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef, createContext, useContext } from 'react';
+import { useState, useEffect, useCallback, useRef, createContext, useContext } from 'react';
 import type { PublicIdentity } from '@unicitylabs/sphere-sdk/connect';
 
 /** Minimal interface matching ConnectClient */
@@ -65,7 +65,7 @@ export interface UseSphereWalletReturn {
 }
 
 // ── Context ─────────────────────────────────────────────────────────────────
-const SphereWalletContext = createContext<UseSphereWalletReturn | null>(null);
+export const SphereWalletContext = createContext<UseSphereWalletReturn | null>(null);
 
 export function useSphereWallet(): UseSphereWalletReturn {
   const ctx = useContext(SphereWalletContext);
@@ -73,13 +73,8 @@ export function useSphereWallet(): UseSphereWalletReturn {
   return ctx;
 }
 
-// ── Provider ─────────────────────────────────────────────────────────────────
-export function SphereWalletProvider({ children }: { children: React.ReactNode }) {
-  const value = useSphereWalletState();
-  return <SphereWalletContext.Provider value={value}>{children}</SphereWalletContext.Provider>;
-}
-
-function useSphereWalletState(): UseSphereWalletReturn {
+// ── State hook (used by provider) ────────────────────────────────────────────
+export function useSphereWalletState(): UseSphereWalletReturn {
   const [isConnected,   setIsConnected]   = useState(false);
   const [isConnecting,  setIsConnecting]  = useState(false);
   const [isLocked,      setIsLocked]      = useState(false);
