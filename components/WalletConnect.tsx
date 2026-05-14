@@ -1,58 +1,53 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Wallet, LogOut, ChevronDown } from 'lucide-react';
-
-/** Simulates connecting to Unicity testnet wallet (no browser extension needed). */
-const TESTNET_ADDRESSES = [
-  'unicity1testnet_0x1a2b3c4d5e6f7a8b',
-  'unicity1testnet_0x9c8d7e6f5a4b3c2d',
-  'unicity1testnet_0xf1e2d3c4b5a69788',
-];
-
-const STORAGE_KEY = 'unicity_wallet_address';
+import { useState } from 'react';
+import { Wallet, LogOut, ChevronDown, Loader2, Lock } from 'lucide-react';
+import { useSphereWallet } from '@/hooks/useSphereWallet';
 
 export default function WalletConnect() {
-  const [address, setAddress] = useState<string | null>(null);
+  const {
+    isConnected,
+    isConnecting,
+    isLocked,
+    identity,
+    nativeBalance,
+    connect,
+    disconnect,
+    error,
+  } = useSphereWallet();
   const [showMenu, setShowMenu] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) setAddress(saved);
-  }, []);
-
-  if (!mounted) return null;
-
-  function connect() {
-    // On real Unicity testnet this would call the wallet SDK;
-    // for now we derive a deterministic address from the browser fingerprint.
-    const addr = TESTNET_ADDRESSES[0];
-    localStorage.setItem(STORAGE_KEY, addr);
-    setAddress(addr);
-    setShowMenu(false);
+  if (isLocked) {
+    return (
+      <div className="flex items-center gap-2 border border-orange-500/40 bg-orange-500/10 text-orange-400 text-sm px-3 py-1.5 rounded-lg">
+        <Lock className="w-4 h-4" />
+        Wallet locked
+      </div>
+    );
   }
 
-  function disconnect() {
-    localStorage.removeItem(STORAGE_KEY);
-    setAddress(null);
-    setShowMenu(false);
-  }
-
-  const short = address ? `${address.slice(0, 14)}…${address.slice(-6)}` : '';
-
-  if (!address) {
+  if (!isConnected) {
     return (
       <button
         onClick={connect}
-        className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+        disabled={isConnecting}
+        className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
       >
-        <Wallet className="w-4 h-4" />
-        Connect Unicity Wallet
+        {isConnecting ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : (
+          <Wallet className="w-4 h-4" />
+        )}
+        {isConnecting ? 'Connecting…' : 'Connect Sphere Wallet'}
       </button>
     );
   }
+
+  const label = identity?.nametag
+    ? `@${identity.nametag}`
+    : identity?.chainPubkey
+      ? `${identity.chainPubkey.slice(0, 10)}…${identity.chainPubkey.slice(-6)}`
+      : 'Connected';
 
   return (
     <div className="relative">
@@ -61,20 +56,41 @@ export default function WalletConnect() {
         className="flex items-center gap-2 border border-orange-500/40 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 text-sm font-medium px-3 py-1.5 rounded-lg transition-colors"
       >
         <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
-        {short}
+        {label}
         <ChevronDown className="w-3 h-3" />
       </button>
 
       {showMenu && (
-        <div className="absolute right-0 top-full mt-2 w-72 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl p-4 z-50">
+        <div className="absolute right-0 top-full mt-2 w-80 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl p-4 z-50">
           <p className="text-xs text-zinc-500 mb-1">Connected · Unicity Testnet</p>
-          <p className="text-xs font-mono text-orange-400 break-all mb-4">{address}</p>
-          <div className="text-xs text-zinc-600 mb-4 space-y-1">
-            <p>Network: <span className="text-zinc-400">Unicity Testnet</span></p>
-            <p>Chain ID: <span className="text-zinc-400">unicity-testnet-1</span></p>
-          </div>
+          {identity?.nametag && (
+            <p className="text-sm font-semibold text-orange-400 mb-1">@{identity.nametag}</p>
+          )}
+          <p className="text-xs font-mono text-zinc-400 break-all mb-1">{identity?.chainPubkey}</p>
+          {identity?.l1Address && (
+            <p className="text-xs font-mono text-zinc-500 break-all mb-3">
+              L1: {identity.l1Address.slice(0, 20)}…
+            </p>
+          )}
+          {nativeBalance && (
+            <div className="bg-zinc-800 rounded-lg px-3 py-2 mb-3">
+              <p className="text-xs text-zinc-500 mb-0.5">Balance</p>
+              <p className="text-sm font-mono font-semibold text-orange-400">
+                {nativeBalance.available} UCT
+              </p>
+              {nativeBalance.pending !== '0' && nativeBalance.pending !== '' && (
+                <p className="text-xs text-zinc-500 font-mono">
+                  Pending: {nativeBalance.pending} UCT
+                </p>
+              )}
+            </div>
+          )}
+          {error && <p className="text-xs text-red-400 mb-3">{error}</p>}
           <button
-            onClick={disconnect}
+            onClick={() => {
+              disconnect();
+              setShowMenu(false);
+            }}
             className="flex items-center gap-2 text-red-400 hover:text-red-300 text-xs font-medium transition-colors"
           >
             <LogOut className="w-3 h-3" />
