@@ -2,25 +2,44 @@
 
 import { useWallet } from '@/lib/store';
 import { TxRecord } from '@/lib/unicity/types';
-import { CheckCircle2, XCircle, Clock } from 'lucide-react';
+import { CheckCircle2, XCircle } from 'lucide-react';
 
-const TX_ICONS: Record<TxRecord['type'], string> = {
-  mint:           '🪙',
-  transfer:       '📤',
-  split:          '✂️',
-  merge:          '🔗',
-  swap_initiate:  '🔄',
-  swap_complete:  '🎉',
-  swap_refund:    '↩️',
-  amm_add:        '➕',
-  amm_remove:     '➖',
-  amm_swap:       '⇄',
-  lend_open:      '🏦',
-  lend_repay:     '💳',
-  lend_liquidate: '⚡',
-  yield_stake:    '🌱',
-  yield_unstake:  '🌾',
-  yield_claim:    '🎁',
+const TX_LABELS: Record<TxRecord['type'], string> = {
+  mint:           'MINT',
+  transfer:       'SEND',
+  split:          'SPLIT',
+  merge:          'MERGE',
+  swap_initiate:  'SWAP',
+  swap_complete:  'SWAP OK',
+  swap_refund:    'REFUND',
+  amm_add:        'ADD LIQ',
+  amm_remove:     'REM LIQ',
+  amm_swap:       'POOL SWAP',
+  lend_open:      'LOAN',
+  lend_repay:     'REPAY',
+  lend_liquidate: 'LIQ',
+  yield_stake:    'STAKE',
+  yield_unstake:  'UNSTAKE',
+  yield_claim:    'CLAIM',
+};
+
+const TX_COLORS: Record<TxRecord['type'], string> = {
+  mint:           'text-purple-400',
+  transfer:       'text-blue-400',
+  split:          'text-zinc-400',
+  merge:          'text-zinc-400',
+  swap_initiate:  'text-orange-400',
+  swap_complete:  'text-green-400',
+  swap_refund:    'text-red-400',
+  amm_add:        'text-green-400',
+  amm_remove:     'text-yellow-400',
+  amm_swap:       'text-orange-400',
+  lend_open:      'text-blue-400',
+  lend_repay:     'text-green-400',
+  lend_liquidate: 'text-red-400',
+  yield_stake:    'text-green-400',
+  yield_unstake:  'text-yellow-400',
+  yield_claim:    'text-orange-400',
 };
 
 export default function TxLog({ max = 12 }: { max?: number }) {
@@ -45,7 +64,9 @@ export default function TxLog({ max = 12 }: { max?: number }) {
             key={t.id}
             className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 transition-colors"
           >
-            <span className="text-lg leading-none mt-0.5">{TX_ICONS[t.type] ?? '📋'}</span>
+            <span className={`text-xs font-bold font-mono w-16 flex-shrink-0 mt-0.5 ${TX_COLORS[t.type] ?? 'text-zinc-400'}`}>
+              {TX_LABELS[t.type] ?? 'TX'}
+            </span>
             <div className="flex-1 min-w-0">
               <p className="text-xs text-zinc-300 truncate">{t.description}</p>
               <p className="text-xs text-zinc-600 mt-0.5">

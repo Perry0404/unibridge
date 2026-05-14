@@ -73,7 +73,7 @@ export default function YieldPage() {
               <div className="flex justify-between">
                 <span className="text-zinc-500">Pending rewards</span>
                 <span className="text-purple-400 font-semibold font-mono">
-                  {totalPending.toFixed(8)} UNI
+                  {totalPending.toFixed(6)} UNI
                 </span>
               </div>
               <div className="flex justify-between">
@@ -137,7 +137,7 @@ export default function YieldPage() {
                 {yieldList.map(yp => {
                   const pool = pools[yp.poolId];
                   const pending = pendingRewards(yp, now);
-                  const elapsed = ((now - yp.stakedAt) / 1000).toFixed(0);
+
                   return (
                     <div key={yp.id} className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
                       <div className="flex items-center justify-between mb-3">
@@ -145,12 +145,12 @@ export default function YieldPage() {
                           <p className="text-sm font-semibold">
                             {pool ? `${pool.symbolA}/${pool.symbolB}` : 'LP'} Pool
                           </p>
-                          <p className="text-xs text-zinc-500 font-mono">{yp.stakedLp.toFixed(6)} LP staked · {elapsed}s ago</p>
+                          <p className="text-xs text-zinc-500 font-mono">{yp.stakedLp.toFixed(6)} LP staked</p>
                         </div>
                         <div className="text-right">
                           <p className="text-xs text-zinc-500">Pending</p>
                           <p className="text-purple-400 font-mono text-sm font-bold">
-                            {pending.toFixed(8)} {yp.rewardSymbol}
+                            {pending.toFixed(6)} {yp.rewardSymbol}
                           </p>
                         </div>
                       </div>

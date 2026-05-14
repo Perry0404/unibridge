@@ -47,6 +47,11 @@ export interface UseSphereWalletReturn {
     amount: string;
     recipient: string;
   }) => Promise<{ txId?: string }>;
+  sendToken: (params: {
+    coinId: string;
+    amount: number;
+    recipient: string;
+  }) => Promise<{ txId?: string }>;
   error: string | null;
 }
 
@@ -188,6 +193,21 @@ export function useSphereWallet(): UseSphereWalletReturn {
     [fetchBalances],
   );
 
+  const sendToken = useCallback(
+    async ({ coinId, amount, recipient }: { coinId: string; amount: number; recipient: string }) => {
+      const client = clientRef.current;
+      if (!client) throw new Error('Wallet not connected');
+      const result = await client.intent<{ txId?: string }>('send', {
+        recipient,
+        amount,
+        coinId,
+      });
+      await fetchBalances();
+      return result ?? {};
+    },
+    [fetchBalances],
+  );
+
   return {
     isConnected,
     isConnecting,
@@ -198,6 +218,7 @@ export function useSphereWallet(): UseSphereWalletReturn {
     connect,
     disconnect,
     sendBridge,
+    sendToken,
     error,
   };
 }

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useWallet, balanceOf } from '@/lib/store';
 import WalletCard from '@/components/WalletCard';
 import TxLog from '@/components/TxLog';
-import { Layers, Plus, Minus, ArrowDownUp, RefreshCw } from 'lucide-react';
+import { Layers, Plus, Minus, ArrowDownUp, RefreshCw, Zap } from 'lucide-react';
 import { getSpotPrice } from '@/lib/defi/amm';
 
 const POOL_PAIRS: [string, string][] = [
@@ -17,7 +17,7 @@ const POOL_PAIRS: [string, string][] = [
 export default function AMMPage() {
   const {
     tokens, pools, lpPositions,
-    initPool, depositLiquidity, withdrawLiquidity, swapInPool,
+    initPool, depositLiquidity, withdrawLiquidity, swapInPool, mintTokens,
   } = useWallet();
 
   const [mounted, setMounted] = useState(false);
@@ -95,6 +95,17 @@ export default function AMMPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="space-y-6">
           <WalletCard />
+
+          {/* Faucet */}
+          <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-4">
+            <p className="text-xs text-zinc-500 mb-3">Need testnet tokens to add liquidity?</p>
+            <button
+              onClick={() => { ['USDT','ETH','BTC','SOL','UNI'].forEach(s => mintTokens(s, ({USDT:1000,ETH:1,BTC:0.05,SOL:10,UNI:100} as Record<string,number>)[s])); setMsg('Testnet tokens added!'); }}
+              className="w-full flex items-center justify-center gap-2 border border-orange-500/40 hover:bg-orange-500/10 text-orange-400 text-sm font-medium py-2.5 rounded-xl transition-colors"
+            >
+              <Zap className="w-4 h-4" /> Get Testnet Tokens
+            </button>
+          </div>
 
           {/* Create pool */}
           <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-5">
