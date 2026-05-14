@@ -5,7 +5,7 @@ import WalletCard from '@/components/WalletCard';
 import { useSphereWallet } from '@/hooks/useSphereWallet';
 import {
   GitMerge, ArrowRight, ChevronDown, Shield, Loader2, Wallet,
-  History, CheckCircle2, Clock, XCircle, ExternalLink,
+  History, CheckCircle2, Clock, XCircle,
 } from 'lucide-react';
 
 const DEST_NETWORKS = [
@@ -444,15 +444,9 @@ export default function BridgePage() {
                           {item.status ?? 'pending'}
                         </span>
                         {item.txId && (
-                          <a
-                            href={`https://sphere.unicity.network/tx/${item.txId}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-zinc-600 hover:text-orange-400 flex items-center gap-1"
-                          >
-                            <ExternalLink className="w-3 h-3" />
-                            {item.txId.slice(0, 8)}...
-                          </a>
+                          <span className="text-xs text-zinc-600 font-mono">
+                            {item.txId.slice(0, 10)}...
+                          </span>
                         )}
                       </div>
                     </div>
