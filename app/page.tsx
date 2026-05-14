@@ -5,7 +5,7 @@ import { useWallet, balanceOf } from '@/lib/store';
 import WalletCard from '@/components/WalletCard';
 import TxLog from '@/components/TxLog';
 import StatCard from '@/components/StatCard';
-import { Shield, Zap, Plus } from 'lucide-react';
+import { Shield, Zap, Plus, GitMerge } from 'lucide-react';
 
 const MINT_PRESETS: { symbol: string; amount: number }[] = [
   { symbol: 'USDT', amount: 10000 },
@@ -37,20 +37,23 @@ export default function DashboardPage() {
     <div className="min-h-screen p-6 max-w-7xl mx-auto space-y-8">
       <div className="text-center space-y-3 pt-8">
         <div className="flex items-center justify-center gap-3 mb-2">
-          <Shield className="w-10 h-10 text-yellow-400" />
-          <h1 className="text-4xl font-bold">Unicity DeFi</h1>
+          <GitMerge className="w-10 h-10 text-orange-500" />
+          <h1 className="text-4xl font-bold">Uni<span className="text-orange-500">Bridge</span></h1>
         </div>
         <p className="text-zinc-400 max-w-xl mx-auto text-sm leading-relaxed">
-          Programmable token ownership backed by the Unicity Uniqueness Oracle.
-          Tokens move peer-to-peer with cryptographic guarantees — no bridges, no shared ledger.
+          Bridge tokens from <span className="text-orange-400 font-medium">Unicity testnet</span> to Solana, Ethereum, BNB Chain, Polygon and more —
+          secured by the Unicity Uniqueness Oracle with zero counterparty risk.
         </p>
+        <a href="/bridge" className="inline-flex items-center gap-2 mt-3 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
+          <GitMerge className="w-4 h-4" /> Start Bridging
+        </a>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard label="Portfolio Value"  value={`$${totalUsd.toLocaleString(undefined, { maximumFractionDigits: 0 })}`} sub="across all assets" accent="yellow" />
+        <StatCard label="Portfolio Value"  value={`$${totalUsd.toLocaleString(undefined, { maximumFractionDigits: 0 })}`} sub="across all assets" accent="orange" />
         <StatCard label="Token Objects"    value={totalTokens}    sub="self-authenticating" accent="green"  />
         <StatCard label="Oracle Records"   value={oracleRecords}  sub="double-spend proof"  accent="blue"   />
-        <StatCard label="System Time τ"    value={tau}            sub="Unicity time units"  accent="yellow" />
+        <StatCard label="System Time \u03c4"    value={tau}            sub="Unicity time units"  accent="orange" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -59,7 +62,7 @@ export default function DashboardPage() {
 
           <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
             <div className="flex items-center gap-2 mb-4">
-              <Plus className="w-4 h-4 text-yellow-400" />
+              <Plus className="w-4 h-4 text-orange-500" />
               <h2 className="text-sm font-medium">Mint Test Tokens</h2>
               <span className="text-xs text-zinc-600 ml-auto">simulates source-chain lock</span>
             </div>
@@ -68,7 +71,7 @@ export default function DashboardPage() {
                 <button
                   key={symbol}
                   onClick={() => mintTokens(symbol, amount)}
-                  className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-yellow-400/50 rounded-xl px-3 py-2.5 text-sm transition-all text-left"
+                  className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-orange-500/50 rounded-xl px-3 py-2.5 text-sm transition-all text-left"
                 >
                   <span className="font-semibold">{amount}</span>{' '}
                   <span className="text-zinc-400">{symbol}</span>
@@ -79,7 +82,7 @@ export default function DashboardPage() {
 
           <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
             <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-4 h-4 text-yellow-400" />
+              <Zap className="w-4 h-4 text-orange-500" />
               <h2 className="text-sm font-medium">Advance Time τ</h2>
             </div>
             <div className="grid grid-cols-3 gap-2">
@@ -101,13 +104,13 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
-              { title: 'Atomic Swaps', desc: 'Trustless P2P exchange using HTLC predicates. No counterparty risk.', href: '/swap', color: 'yellow' },
-              { title: 'AMM Pools',   desc: 'Constant-product (x·y=k) market maker with LP token rewards.',       href: '/amm',     color: 'green'  },
-              { title: 'Lending',     desc: 'Over-collateralised borrowing with predicate-locked collateral.',      href: '/lending', color: 'blue'   },
+              { title: 'Bridge',        desc: 'Move tokens from Unicity testnet to Solana, Ethereum, BNB Chain and more.', href: '/bridge', color: 'orange' },
+              { title: 'Atomic Swaps', desc: 'Trustless P2P exchange using HTLC predicates. No counterparty risk.', href: '/swap', color: 'green' },
+              { title: 'AMM Pools',   desc: 'Constant-product (x·y=k) market maker with LP token rewards.',       href: '/amm',     color: 'blue'   },
             ].map(c => (
               <a key={c.href} href={c.href}
                 className="group bg-zinc-950 border border-zinc-800 hover:border-zinc-600 rounded-2xl p-5 transition-all">
-                <h3 className={`font-semibold mb-2 ${c.color === 'yellow' ? 'text-yellow-400' : c.color === 'green' ? 'text-green-400' : 'text-blue-400'}`}>
+                <h3 className={`font-semibold mb-2 ${c.color === 'orange' ? 'text-orange-500' : c.color === 'green' ? 'text-green-400' : 'text-blue-400'}`}>
                   {c.title}
                 </h3>
                 <p className="text-xs text-zinc-500 leading-relaxed">{c.desc}</p>
@@ -119,8 +122,8 @@ export default function DashboardPage() {
             <h3 className="text-zinc-300 font-medium mb-3">Unicity Architecture</h3>
             <div className="grid grid-cols-3 gap-3 text-center">
               <div className="bg-zinc-900 rounded-xl p-3">
-                <p className="text-yellow-400 font-mono mb-1">Source Chain</p>
-                <p>Assets locked on Solana / ETH / BTC</p>
+                <p className="text-orange-500 font-mono mb-1">Unicity Testnet</p>
+                <p>Assets locked by predicate + Oracle proof</p>
               </div>
               <div className="bg-zinc-900 rounded-xl p-3">
                 <p className="text-green-400 font-mono mb-1">Uniqueness Oracle</p>

@@ -16,7 +16,7 @@ export default function WalletCard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-sm font-medium">
-          <Wallet className="w-4 h-4 text-yellow-400" />
+          <Wallet className="w-4 h-4 text-orange-500" />
           Wallet
         </div>
         <span className="text-xs text-zinc-500 font-mono">{pubkey.slice(-12)}</span>
@@ -46,7 +46,7 @@ export default function WalletCard() {
           <div className="flex items-center gap-1.5 text-xs text-zinc-500 mb-1">
             <Clock className="w-3 h-3" /> System Time τ
           </div>
-          <span className="font-mono text-lg font-bold text-yellow-400">{tau}</span>
+          <span className="font-mono text-lg font-bold text-orange-500">{tau}</span>
         </div>
         <div className="bg-zinc-900 rounded-xl p-3">
           <div className="flex items-center gap-1.5 text-xs text-zinc-500 mb-1">
